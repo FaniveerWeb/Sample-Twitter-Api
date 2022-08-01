@@ -31,6 +31,12 @@ namespace TwitterApiDotNet.Controllers
             try
             {
                 Logger.LogInformation("Calling tweeter api for streaming");
+                // random number generator
+
+
+                Random rnd = new Random();
+
+
                 // string match pattern
                 const string HashTagPattern = @"#([A-Za-z0-9\-_&;]+)";
                 // authenticate the user here 
@@ -45,6 +51,7 @@ namespace TwitterApiDotNet.Controllers
 
                 var appClient = new TwitterClient(appCredentials);
                 var sampleStreamV2 = appClient.StreamsV2.CreateSampleStream();
+                var count = 0;
                 sampleStreamV2.TweetReceived += (sender, args) =>
                 {
                     // create the tweet and save to database
@@ -54,6 +61,7 @@ namespace TwitterApiDotNet.Controllers
                     {
                         Id = args.Tweet.Id,
                         Text = args.Tweet.Text,
+                        lang = args.Tweet.Lang,
                         Like_Count = args.Tweet.PublicMetrics.LikeCount,
                         Retweet_Count = args.Tweet.PublicMetrics.RetweetCount
                     };
@@ -74,19 +82,21 @@ namespace TwitterApiDotNet.Controllers
 
                             }
                         }
+
                         foreach (var tweettag in names)
                         {
                             TweetTag tweetTag = new TweetTag
                             {
-                                ID = tweets.Id,
+                                UserID = tweets.Id,
+                                TweetUniqID = count + rnd.Next(),
                                 Tag = tweettag
                             };
                             TwitterDbContext.TweetTags.Add(tweetTag);
+                            count = count + 1;
                             TwitterDbContext.SaveChanges();
                         }
                     }
 
-                    Console.WriteLine(args.Json);
 
                 };
 

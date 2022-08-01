@@ -7,7 +7,9 @@ namespace TwitterApiDotNet.Models
 {
     public class TweetTag
     {
-        public string ID {get;set;}
+        [System.ComponentModel.DataAnnotations.Key]
+        public int TweetUniqID {get;set;}
+        public string UserID {get;set;}
         public string Tag {get; set;}
     }
 }
