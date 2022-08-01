@@ -13,5 +13,7 @@ namespace TwitterApiDotNet.Models
         }
 
         public DbSet<Employee> Employees {get;set;}
+        public DbSet<Tweets> Tweets {get; set;}
+        public DbSet<TweetTag> TweetTags {get;set;}
     }
 }
