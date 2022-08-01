@@ -44,7 +44,11 @@ namespace TwitterApiDotNet.Controllers
                 var sampleStreamV2 = appClient.StreamsV2.CreateSampleStream();
                 sampleStreamV2.TweetReceived += (sender, args) =>
                 {
-                    Console.WriteLine(args.Tweet.Entities);
+                    //Console.WriteLine(args.Tweet.Text);
+                    //Console.WriteLine(args.Tweet.ToString());
+
+                    Console.WriteLine(args.Json);
+                    
                 };
 
                 await sampleStreamV2.StartAsync();
