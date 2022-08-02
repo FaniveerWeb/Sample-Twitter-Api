@@ -22,12 +22,23 @@ namespace TwitterApiDotNet.Controllers
 [HttpGet]
         public IActionResult Get()
         {
-            var qResult = _twitterDb.TweetTags.GroupBy(w => w.Tag)
-            .Select( w=> new {
-                tagname= w.Key,
-                count = w.Count()
-            }).OrderByDescending( o => o.count).Take(10);
-            return Ok(qResult);
+            try
+            {
+                var qResult = _twitterDb.TweetTags.GroupBy(w => w.Tag)
+            .Select(w => new TweetGroupBy
+            {
+                TagName = w.Key,
+                Count = w.Count()
+            }).OrderByDescending(o => o.Count).Take(10);
+                return Ok(qResult);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.ToString());
+                return StatusCode(500);
+            }
+            
 
         }
 
