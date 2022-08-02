@@ -20,7 +20,7 @@ namespace TwitterApiDotNet.Controllers
             _twitterDb = twitterDbContext;
         }
         [HttpGet]
-        public IActionResult Get() {
+        public IActionResult GetTweetCount() {
             _logger.LogInformation("Total number of tweets");
             try {
                 return Ok(_twitterDb.Tweets.Count());
