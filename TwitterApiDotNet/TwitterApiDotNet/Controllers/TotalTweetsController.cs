@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TwitterApiDotNet.Models;
 
@@ -19,17 +15,21 @@ namespace TwitterApiDotNet.Controllers
             _logger = logger;
             _twitterDb = twitterDbContext;
         }
+
         [HttpGet]
-        public IActionResult GetTweetCount() {
+        public IActionResult GetTweetCount()
+        {
             _logger.LogInformation("Total number of tweets");
-            try {
+
+            try
+            {
                 return Ok(_twitterDb.Tweets.Count());
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 _logger.LogError(ex.ToString());
                 return StatusCode(500);
             }
         }
-       
     }
 }

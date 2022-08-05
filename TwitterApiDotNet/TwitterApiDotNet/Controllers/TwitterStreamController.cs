@@ -5,7 +5,6 @@ using Tweetinvi.Models;
 using TwitterApiDotNet.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace TwitterApiDotNet.Controllers
 {
     [Route("api/[controller]")]
@@ -23,7 +22,6 @@ namespace TwitterApiDotNet.Controllers
             Config = config;
         }
 
-
         // GET: api/<TwitterStreamController>
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -31,32 +29,25 @@ namespace TwitterApiDotNet.Controllers
             try
             {
                 Logger.LogInformation("Calling tweeter api for streaming");
+                
                 // random number generator
-
-
                 Random rnd = new Random();
-
 
                 // string match pattern
                 const string HashTagPattern = @"#([A-Za-z0-9\-_&;]+)";
+
                 // authenticate the user here 
                 var consumerOnlyCredentials = new ConsumerOnlyCredentials(Config["ClientApiKey"], Config["ClientApiKeySecret"]);
                 var appClientWithoutBearer = new TwitterClient(consumerOnlyCredentials);
+                consumerOnlyCredentials.BearerToken = await appClientWithoutBearer.Auth.CreateBearerTokenAsync();
 
-                var bearerToken = await appClientWithoutBearer.Auth.CreateBearerTokenAsync();
-                var appCredentials = new ConsumerOnlyCredentials(Config["ClientApiKey"], Config["ClientApiKeySecret"])
-                {
-                    BearerToken = bearerToken
-                };
-
-                var appClient = new TwitterClient(appCredentials);
+                var appClient = new TwitterClient(consumerOnlyCredentials);
                 var sampleStreamV2 = appClient.StreamsV2.CreateSampleStream();
                 var count = 0;
+
                 sampleStreamV2.TweetReceived += (sender, args) =>
                 {
-                    // create the tweet and save to database
-                    //Console.WriteLine(args.Tweet.Text);
-                    //Console.WriteLine(args.Tweet.ToString());
+                    // Create the tweet and save to database
                     Tweets tweets = new Tweets
                     {
                         Id = args.Tweet.Id,
@@ -65,11 +56,11 @@ namespace TwitterApiDotNet.Controllers
                         Like_Count = args.Tweet.PublicMetrics.LikeCount,
                         Retweet_Count = args.Tweet.PublicMetrics.RetweetCount
                     };
+
                     TwitterDbContext.Tweets.Add(tweets);
                     TwitterDbContext.SaveChanges();
 
-
-                    //  save the user tag 
+                    // Save the user tag 
                     if (args.Tweet.Text.Contains("#"))
                     {
                         var names = new List<string>();
@@ -79,7 +70,6 @@ namespace TwitterApiDotNet.Controllers
                             if (!names.Contains(hashTag))
                             {
                                 names.Add(hashTag);
-
                             }
                         }
 
@@ -91,28 +81,22 @@ namespace TwitterApiDotNet.Controllers
                                 TweetUniqID = count + rnd.Next(),
                                 Tag = tweettag
                             };
+
                             TwitterDbContext.TweetTags.Add(tweetTag);
                             count = count + 1;
                             TwitterDbContext.SaveChanges();
                         }
                     }
-
-
                 };
 
                 await sampleStreamV2.StartAsync();
                 return Ok("test");
-
             }
             catch (Exception ex)
             {
-
                 Logger.LogError(ex.ToString());
-                return StatusCode(500)
-;
+                return StatusCode(500);
             }
         }
-
-
     }
 }
