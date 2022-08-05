@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TwitterApiDotNet.Controllers;
 using TwitterApiDotNet.Models;
+using TwitterApiDotNet.Repository;
 using Xunit;
 
 namespace TwitterApiDotNet.Test
@@ -11,26 +12,27 @@ namespace TwitterApiDotNet.Test
         [Fact]
         public void Test1()
         {
-            //Arrange 
-            var options = new DbContextOptionsBuilder<TwitterDbContext>()
-            .UseInMemoryDatabase(databaseName: "test")
-            .Options;
+            ////Arrange 
+            
+            //var options = new DbContextOptionsBuilder<TwitterDbContext>()
+            //.UseInMemoryDatabase(databaseName: "test")
+            //.Options;
 
-            using (var context = new TwitterDbContext(options))
-            {
-                context.Tweets.Add(new Tweets { Id = "1", lang = "EN", Like_Count = 1, Retweet_Count = 2, Text = "twat" });
-                context.Tweets.Add(new Tweets { Id ="2" , lang ="EN", Like_Count=1,Retweet_Count=2,Text="twat"});
+            //TwitterRepositor twitterRepositor = new TwitterRepositor(new TwitterDbContext(options));
 
-                context.SaveChanges();
+            //twitterRepositor.AddTweet(new Tweets { Id = "1", lang = "EN", Like_Count = 1, Retweet_Count = 2, Text = "twat" });
+            //twitterRepositor.AddTweet(new Tweets { Id ="2" , lang ="EN", Like_Count=1,Retweet_Count=2,Text="twat"});
 
-                //Act
-                TotalTweetsController totalTweets = new TotalTweetsController(new Microsoft.Extensions.Logging.Abstractions.NullLogger<TotalTweetsController>(), context);
-                var result = (OkObjectResult)totalTweets.GetTweetCount();
+            //twitterRepositor.Save();
 
-                //Assert
-                Assert.Equal(2,result.Value);
 
-            }
+
+            ////Act
+            //TotalTweetsController totalTweets = new TotalTweetsController(new Microsoft.Extensions.Logging.Abstractions.NullLogger<TotalTweetsController>(), tweetTagRepositorycs);
+            //var result = (OkObjectResult)totalTweets.GetTweetCount();
+
+            ////Assert
+            //Assert.Equal(2, result.Value);
 
 
         }

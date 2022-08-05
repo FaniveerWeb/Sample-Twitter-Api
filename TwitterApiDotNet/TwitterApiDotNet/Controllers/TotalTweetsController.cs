@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TwitterApiDotNet.Models;
+using TwitterApiDotNet.Repository;
 
 namespace TwitterApiDotNet.Controllers
 {
@@ -8,12 +9,13 @@ namespace TwitterApiDotNet.Controllers
     public class TotalTweetsController : ControllerBase
     {
         private readonly ILogger<TotalTweetsController> _logger;
+        private readonly ITwitterRepository _twitterRepository;
         private readonly TwitterDbContext _twitterDb;
 
-        public TotalTweetsController(ILogger<TotalTweetsController> logger, TwitterDbContext twitterDbContext)
+        public TotalTweetsController(ILogger<TotalTweetsController> logger, ITwitterRepository twitterRepository)
         {
             _logger = logger;
-            _twitterDb = twitterDbContext;
+            _twitterRepository = twitterRepository;
         }
 
         [HttpGet]
@@ -23,7 +25,7 @@ namespace TwitterApiDotNet.Controllers
 
             try
             {
-                return Ok(_twitterDb.Tweets.Count());
+                return Ok(_twitterRepository.GetTweetsCount());
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TwitterApiDotNet.Models;
+using TwitterApiDotNet.Repository;
 
 namespace TwitterApiDotNet.Controllers
 {
@@ -7,12 +8,12 @@ namespace TwitterApiDotNet.Controllers
     public class TopTagController : ControllerBase
     {
         private readonly ILogger<TopTagController> _logger;
-        private readonly TwitterDbContext _twitterDb;
+        private readonly ITweetTag _tweetTag;
 
-        public TopTagController(ILogger<TopTagController> logger, TwitterDbContext twitterDbContext)
+        public TopTagController(ILogger<TopTagController> logger, ITweetTag tweetTag)
         {
             _logger = logger;
-            _twitterDb = twitterDbContext;
+            _tweetTag = tweetTag;
         }
 
         [HttpGet]
@@ -20,13 +21,8 @@ namespace TwitterApiDotNet.Controllers
         {
             try
             {
-                var qResult = _twitterDb.TweetTags.GroupBy(w => w.Tag)
-                                .Select(w => new TweetGroupBy
-                                {
-                                    TagName = w.Key,
-                                    Count = w.Count()
-                                }).OrderByDescending(o => o.Count).Take(10);
-                return Ok(qResult);
+               
+                return Ok(_tweetTag.TopTweetTagGroup());
             }
             catch (Exception ex)
             {

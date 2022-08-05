@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tweetinvi;
 using Tweetinvi.Models;
 using TwitterApiDotNet.Models;
+using TwitterApiDotNet.Repository;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 namespace TwitterApiDotNet.Controllers
@@ -12,13 +13,15 @@ namespace TwitterApiDotNet.Controllers
     public class TwitterStreamController : ControllerBase
     {
         public ILogger<TwitterStreamController> Logger { get; }
-        public TwitterDbContext TwitterDbContext { get; }
+        public ITwitterRepository TwitterRepository { get; }
+        public ITweetTag TweetTagRepository { get; }
         public IConfiguration Config { get; }
 
-        public TwitterStreamController(ILogger<TwitterStreamController> logger, TwitterDbContext twitterDbContext, IConfiguration config)
+        public TwitterStreamController(ILogger<TwitterStreamController> logger, ITwitterRepository twitterRepository, ITweetTag tweetTag, IConfiguration config)
         {
             Logger = logger;
-            TwitterDbContext = twitterDbContext;
+            TwitterRepository = twitterRepository;
+            TweetTagRepository = tweetTag;
             Config = config;
         }
 
@@ -57,8 +60,8 @@ namespace TwitterApiDotNet.Controllers
                         Retweet_Count = args.Tweet.PublicMetrics.RetweetCount
                     };
 
-                    TwitterDbContext.Tweets.Add(tweets);
-                    TwitterDbContext.SaveChanges();
+                    TwitterRepository.AddTweet(tweets);
+                    TwitterRepository.Save();
 
                     // Save the user tag 
                     if (args.Tweet.Text.Contains("#"))
@@ -82,9 +85,9 @@ namespace TwitterApiDotNet.Controllers
                                 Tag = tweettag
                             };
 
-                            TwitterDbContext.TweetTags.Add(tweetTag);
+                            TweetTagRepository.AddTweetTag(tweetTag);
                             count = count + 1;
-                            TwitterDbContext.SaveChanges();
+                            TweetTagRepository.Save();
                         }
                     }
                 };

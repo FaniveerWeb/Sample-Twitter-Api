@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TwitterApiDotNet.Models;
+using TwitterApiDotNet.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<ITwitterRepository, TwitterRepositor>();
+builder.Services.AddTransient<ITweetTag, TweetTagRepositorycs>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
