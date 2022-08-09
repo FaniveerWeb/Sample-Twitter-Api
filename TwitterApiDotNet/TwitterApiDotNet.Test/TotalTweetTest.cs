@@ -12,27 +12,26 @@ namespace TwitterApiDotNet.Test
         [Fact]
         public void Test1()
         {
-            ////Arrange 
-            
-            //var options = new DbContextOptionsBuilder<TwitterDbContext>()
-            //.UseInMemoryDatabase(databaseName: "test")
-            //.Options;
+            //Arrange 
 
-            //TwitterRepositor twitterRepositor = new TwitterRepositor(new TwitterDbContext(options));
+            var options = new DbContextOptionsBuilder<TwitterDbContext>()
+            .UseInMemoryDatabase(databaseName: "test")
+            .Options;
 
-            //twitterRepositor.AddTweet(new Tweets { Id = "1", lang = "EN", Like_Count = 1, Retweet_Count = 2, Text = "twat" });
-            //twitterRepositor.AddTweet(new Tweets { Id ="2" , lang ="EN", Like_Count=1,Retweet_Count=2,Text="twat"});
+            TwitterRepositor twitterRepositor = new TwitterRepositor(new TwitterDbContext(options));
 
-            //twitterRepositor.Save();
+            twitterRepositor.AddTweet(new Tweets { Id = "1", lang = "EN", Like_Count = 1, Retweet_Count = 2, Text = "twat" });
+            twitterRepositor.AddTweet(new Tweets { Id = "2", lang = "EN", Like_Count = 1, Retweet_Count = 2, Text = "twat" });
+
+            twitterRepositor.Save();
 
 
 
-            ////Act
-            //TotalTweetsController totalTweets = new TotalTweetsController(new Microsoft.Extensions.Logging.Abstractions.NullLogger<TotalTweetsController>(), tweetTagRepositorycs);
-            //var result = (OkObjectResult)totalTweets.GetTweetCount();
+            //Act
+            twitterRepositor.Save();
 
-            ////Assert
-            //Assert.Equal(2, result.Value);
+            //Assert
+            Assert.Equal(2, twitterRepositor.GetTweets().Count());
 
 
         }

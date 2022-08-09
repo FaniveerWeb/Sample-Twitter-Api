@@ -20,8 +20,7 @@ namespace TwitterApiDotNet.Controllers
         public IActionResult Get()
         {
             try
-            {
-               
+            {               
                 return Ok(_tweetTag.TopTweetTagGroup());
             }
             catch (Exception ex)

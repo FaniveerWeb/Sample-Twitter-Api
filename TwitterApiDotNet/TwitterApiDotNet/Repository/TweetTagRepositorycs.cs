@@ -5,6 +5,7 @@ namespace TwitterApiDotNet.Repository
     public class TweetTagRepositorycs : ITweetTag, IDisposable
     {
         private readonly TwitterDbContext _twitterDbContext;
+        private bool disposed = false;
 
         public TweetTagRepositorycs(TwitterDbContext twitterDbContext)
         {
@@ -13,22 +14,18 @@ namespace TwitterApiDotNet.Repository
 
         IEnumerable<TweetTag> ITweetTag.GetTweetsTag()
         {
-           return  _twitterDbContext.TweetTags.Take(50);
+            return _twitterDbContext.TweetTags;
         }
 
-        public void  AddTweetTag(TweetTag tweet)
+        public void AddTweetTag(TweetTag tweet)
         {
             _twitterDbContext.TweetTags.Add(tweet);
         }
-
-        
 
         public void Save()
         {
             _twitterDbContext.SaveChanges();
         }
-
-        private bool disposed = false;
 
         protected virtual void Dispose(bool disposing)
         {
